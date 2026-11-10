@@ -1,0 +1,96 @@
+﻿using Microsoft.Xrm.Sdk;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using System.Linq.Expressions;
+using System.Runtime.Serialization;
+using Microsoft.Xrm.Sdk.Client;
+
+namespace TestNamespace;
+
+/// <summary>
+/// <para>Use when a &lt; b</para>
+/// <para>and R&amp;D is involved</para>
+/// <para>Display Name: Cases &amp; &lt;Tickets&gt;</para>
+/// </summary>
+[System.CodeDom.Compiler.GeneratedCode("DataverseProxyGenerator", "1.0.0.0")]
+[EntityLogicalName("prefix_case")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract]
+#pragma warning disable CS8981 // Allows: Only lowercase characters
+public partial class prefix_case : ExtendedEntity
+#pragma warning restore CS8981
+{
+    public const string EntityLogicalName = "prefix_case";
+    public const int EntityTypeCode = 0;
+
+    public prefix_case() : base(EntityLogicalName) { }
+    public prefix_case(Guid id) : base(EntityLogicalName, id) { }
+
+    private string DebuggerDisplay => GetDebuggerDisplay("prefix_name");
+
+    [AttributeLogicalName("prefix_caseid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("prefix_caseid", value);
+        }
+    }
+
+    /// <summary>
+    /// <para>Amount must be &lt; 1000 &amp; &gt; 0</para>
+    /// <para>See &lt;docs&gt; &amp; notes</para>
+    /// <para>Display Name: The "main" C:\path</para>
+    /// </summary>
+    [AttributeLogicalName("prefix_amount")]
+    [DisplayName("The \"main\" C:\\path")]
+    [MaxLength()]
+    public string? prefix_Amount
+    {
+        get => GetAttributeValue<string?>("prefix_amount");
+        set => SetAttributeValue("prefix_amount", value);
+    }
+
+    /// <summary>
+    /// Gets the logical column name for a property on the prefix_case entity, using the AttributeLogicalNameAttribute if present.
+    /// </summary>
+    /// <param name="column">Expression to pick the column</param>
+    /// <returns>Name of column</returns>
+    /// <exception cref="ArgumentNullException">If no expression is provided</exception>
+    /// <exception cref="ArgumentException">If the expression is not x => x.column</exception>
+    public static string GetColumnName(Expression<Func<prefix_case, object?>> column)
+    {
+        return TableAttributeHelpers.GetColumnName(column);
+    }
+
+    /// <summary>
+    /// Retrieves the prefix_case with the specified columns.
+    /// </summary>
+    /// <param name="service">Organization service</param>
+    /// <param name="id">Id of prefix_case to retrieve</param>
+    /// <param name="columns">Expressions that specify columns to retrieve</param>
+    /// <returns>The retrieved prefix_case</returns>
+    public static prefix_case Retrieve(IOrganizationService service, Guid id, params Expression<Func<prefix_case, object?>>[] columns)
+    {
+        return service.Retrieve(id, columns);
+    }
+
+    /// <summary>
+    /// Retrieves the prefix_case using the Amount &lt;key&gt; &amp; more alternate key.
+    /// </summary>
+    /// <param name="service">Organization service</param>
+    /// <param name="prefix_Amount">prefix_Amount key value</param>
+    /// <param name="columns">Expressions that specify columns to retrieve</param>
+    /// <returns>The retrieved prefix_case</returns>
+    public static prefix_case Retrieve_prefix_amountkey(IOrganizationService service, string prefix_Amount, params Expression<Func<prefix_case, object?>>[] columns)
+    {
+        var keyedEntityReference = new EntityReference(EntityLogicalName, new KeyAttributeCollection
+        {
+            ["prefix_amount"] = prefix_Amount,
+        });
+
+        return service.Retrieve(keyedEntityReference, columns);
+    }
+}

@@ -196,4 +196,53 @@ public class NameSanitizerTests
         // Assert - These characters should NOT be escaped, only quotes and backslashes
         Assert.Equal("Value with $ and { and } characters", result);
     }
+
+    [Fact]
+    public void EscapeXmlDoc_WithAmpersandAndAngleBrackets_EscapesThem()
+    {
+        // Arrange
+        var input = "Amount must be < 1000 & > 0";
+
+        // Act
+        var result = NameSanitizer.EscapeXmlDoc(input);
+
+        // Assert
+        Assert.Equal("Amount must be &lt; 1000 &amp; &gt; 0", result);
+    }
+
+    [Fact]
+    public void EscapeXmlDoc_WithAlreadyEscapedEntity_EscapesAmpersand()
+    {
+        // Arrange
+        var input = "Tom &amp; Jerry";
+
+        // Act
+        var result = NameSanitizer.EscapeXmlDoc(input);
+
+        // Assert
+        Assert.Equal("Tom &amp;amp; Jerry", result);
+    }
+
+    [Fact]
+    public void EscapeXmlDoc_WithQuotes_KeepsThem()
+    {
+        // Arrange
+        var input = "The \"main\" contact's name";
+
+        // Act
+        var result = NameSanitizer.EscapeXmlDoc(input);
+
+        // Assert
+        Assert.Equal("The \"main\" contact's name", result);
+    }
+
+    [Fact]
+    public void EscapeXmlDoc_WithNull_ReturnsEmpty()
+    {
+        // Act
+        var result = NameSanitizer.EscapeXmlDoc(null!);
+
+        // Assert
+        Assert.Equal(string.Empty, result);
+    }
 }

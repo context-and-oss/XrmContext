@@ -93,3 +93,16 @@ dotnet xrmcontext --namespace MyCompany.CRM
 - **Deprecation support** - Mark deprecated attributes with custom prefix
 - **Interface mapping** - Group entities under common interfaces
 - **DebuggerDisplay** - Better debugging experience with display attributes
+
+## Option Set Name Collisions
+
+Tables and option sets are generated into the same namespace. When an option set has the same name as a table (compared case-insensitively), `_Enum` is appended to the enum name. If that name is also taken, a number is added (`_Enum2`, `_Enum3`, ...). Option sets without a collision keep their name.
+
+For example, a table `prefix_ticket` and a global option set `prefix_ticket` generate:
+
+``` CSharp
+public partial class prefix_ticket : ExtendedEntity { ... }
+public enum prefix_ticket_Enum { ... }
+```
+
+Adding a table later can therefore rename an existing enum.

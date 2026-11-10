@@ -42,7 +42,7 @@ public class CSharpProxyGenerator : ICodeGenerator
         ArgumentNullException.ThrowIfNull(config);
 
         var context = CreateGenerationContext(config);
-        var tablesList = tables.ToList();
+        var tablesList = EnumNameResolver.Resolve(tables.ToList()).ToList();
         var (interfaceColumns, tableToInterfaces) = PrepareIntersectionData(tablesList, config);
         var customApiList = config.GenerateCustomApis ? customApis.ToList() : new List<CustomApiModel>();
 
@@ -114,17 +114,7 @@ public class CSharpProxyGenerator : ICodeGenerator
         var tableColumns = new Dictionary<string, HashSet<ColumnSignature>>(StringComparer.InvariantCulture);
         foreach (var t in tables)
         {
-            var set = new HashSet<ColumnSignature>();
-            foreach (var c in t.Columns)
-            {
-                // For EnumColumnModel, include OptionsetName in the signature to distinguish enums with same logical name but different optionsets
-                if (c is EnumColumnModel enumCol)
-                    set.Add(new ColumnSignature(c.SchemaName, $"EnumColumnModel:{enumCol.OptionsetName}"));
-                else
-                    set.Add(new ColumnSignature(c.SchemaName, c.TypeName));
-            }
-
-            tableColumns[t.LogicalName] = set;
+            tableColumns[t.LogicalName] = t.Columns.Select(ColumnSignature.From).ToHashSet();
         }
 
         return tableColumns;

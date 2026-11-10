@@ -16,7 +16,7 @@ public static class IntersectionInterfaceMapper
             .Select(sig =>
                 tables
                 .SelectMany(t => t.Columns)
-                .FirstOrDefault(c => c.SchemaName == sig.SchemaName && c.TypeName == sig.TypeName))
+                .FirstOrDefault(c => ColumnSignature.From(c) == sig))
             .Where(c => c != null)
             .Cast<ColumnModel>();
 
