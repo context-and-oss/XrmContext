@@ -7,6 +7,7 @@ public partial class {{ api.sanitized_unique_name }}Response : Microsoft.Xrm.Sdk
     {
     }
 
+    {{~ if api.response_properties.size > 0 ~}}
     public {{ api.sanitized_unique_name }}Response({{~ for prop in api.response_properties }}{{ prop.csharp_type }} {{ prop.argument_name }}{{ if !for.last }}, {{ end }}{{~ end ~}})
     {
         {{~ for prop in api.response_properties ~}}
@@ -14,6 +15,7 @@ public partial class {{ api.sanitized_unique_name }}Response : Microsoft.Xrm.Sdk
         {{~ end ~}}
     }
 
+    {{~ end ~}}
     {{~ for prop in api.response_properties ~}}
 
     {{ prop.xml_doc_comment }}

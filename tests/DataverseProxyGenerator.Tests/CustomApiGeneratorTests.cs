@@ -127,6 +127,48 @@ public class CustomApiGeneratorTests
         Assert.Contains("this.Name = name;", response.Content, StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData(false, 0)]
+    [InlineData(false, 1)]
+    [InlineData(false, 2)]
+    [InlineData(true, 0)]
+    [InlineData(true, 1)]
+    [InlineData(true, 2)]
+    public async Task Response_Only_Generates_Parameterized_Constructor_When_Properties_Exist(bool singleFile, int propertyCount)
+    {
+        var customApi = new CustomApiModel
+        {
+            UniqueName = "new_ConstructorApi",
+            ResponseProperties = Enumerable.Range(0, propertyCount)
+                .Select(i => new CustomApiParameterModel
+                {
+                    UniqueName = $"Value{i}",
+                    Type = CustomApiParameterType.IntegerType,
+                }).ToList(),
+        };
+        var config = new XrmGenerationConfig(
+            OutputDirectory: "output",
+            NamespaceSetting: "TestNamespace",
+            ServiceContextName: "Xrm",
+            IntersectMapping: new Dictionary<string, IReadOnlyList<string>>(StringComparer.InvariantCulture),
+            SingleFile: singleFile,
+            GenerateCustomApis: true);
+
+        var files = await new CSharpProxyGenerator().GenerateCodeAsync([], [customApi], config).ToListAsync();
+        var response = singleFile ? files.Single() : files.Single(f => f.Filename.EndsWith("Response.cs", StringComparison.Ordinal));
+        var request = singleFile ? files.Single() : files.Single(f => f.Filename.EndsWith("Request.cs", StringComparison.Ordinal));
+        var responseConstructors = response.Content.Split('\n')
+            .Where(line => line.TrimStart().StartsWith("public new_ConstructorApiResponse(", StringComparison.Ordinal)).ToList();
+        var requestConstructors = request.Content.Split('\n')
+            .Where(line => line.TrimStart().StartsWith("public new_ConstructorApiRequest(", StringComparison.Ordinal));
+
+        Assert.Equal(propertyCount == 0 ? 1 : 2, responseConstructors.Count);
+        Assert.Single(responseConstructors, line => line.Trim() == "public new_ConstructorApiResponse()");
+        Assert.Single(requestConstructors);
+        Assert.Contains("public new_ConstructorApiRequest()", request.Content, StringComparison.Ordinal);
+        Assert.Contains("this.RequestName = \"new_ConstructorApi\";", request.Content, StringComparison.Ordinal);
+    }
+
     [Fact]
     public async Task Description_Becomes_XmlDoc_Summary_On_Property()
     {
