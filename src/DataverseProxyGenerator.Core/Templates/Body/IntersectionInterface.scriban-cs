@@ -6,11 +6,11 @@ public interface {{interface.Name}}
     /// <summary>
     {{~ if column.Description && column.Description != "" && column.Description != " " && column.Description != "  " && column.Description != "\t" && column.Description != "\n" && column.Description != "\r\n" ~}}
     {{~ for line in column.Description | string.split '\n' ~}}
-    /// <para>{{ line | string.strip }}</para>
+    /// <para>{{ line | string.strip | xml_doc }}</para>
     {{~ end ~}}
     {{~ end ~}}
     {{~ if column.DisplayName ~}}
-    /// <para>Display Name: {{ column.DisplayName }}</para>
+    /// <para>Display Name: {{ column.DisplayName | xml_doc }}</para>
     {{~ end ~}}
     /// </summary>
     {{~ end ~}}

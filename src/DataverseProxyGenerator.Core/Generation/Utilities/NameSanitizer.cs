@@ -86,6 +86,20 @@ public static class NameSanitizer
     }
 
     /// <summary>
+    /// Escapes a string to make it safe for use as text in an XML documentation comment.
+    /// </summary>
+    /// <param name="input">The string to escape.</param>
+    /// <returns>A string safe for use in XML documentation comments.</returns>
+    public static string EscapeXmlDoc(string input)
+    {
+        input ??= string.Empty;
+        return input
+            .Replace("&", "&amp;", StringComparison.Ordinal) // Ampersand must be first
+            .Replace("<", "&lt;", StringComparison.Ordinal)
+            .Replace(">", "&gt;", StringComparison.Ordinal);
+    }
+
+    /// <summary>
     /// Checks if a string is a C# reserved keyword.
     /// </summary>
     /// <param name="name">The name to check.</param>

@@ -4,6 +4,7 @@ Migration from XrmContext main to XrmContext rewrite will require the following 
 
 1. Local Option Sets
 2. Primary Identifier Column
+3. Option Set Name Collisions
 
 ## 1. Local Option Sets
 
@@ -28,3 +29,9 @@ Going forward the typing will therefore become:
 public Guid Id { ... }
 public Guid AccountId { ...}
 ```
+
+## 3. Option Set Name Collisions
+
+As in XrmContext main, an option set enum whose name collides with a table gets the suffix `_Enum`.
+The comparison is now case-insensitive, so e.g. a table `prefix_Ticket` and an option set `prefix_ticket` now also generate `prefix_ticket_Enum`.
+If the suffixed name is also taken, a number is added (`_Enum2`, `_Enum3`, ...).

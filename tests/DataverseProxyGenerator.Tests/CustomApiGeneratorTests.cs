@@ -25,6 +25,30 @@ public class CustomApiGeneratorTests
     }
 
     [Fact]
+    public async Task Generates_Valid_Doc_Comments_For_Multiline_Descriptions_With_Special_Characters()
+    {
+        const string description = "Amount must be < 1000 & > 0\nSee the docs";
+        var customApi = new CustomApiModel
+        {
+            UniqueName = "new_DescribedApi",
+            RequestParameters = [new() { UniqueName = "AmountIn", Type = CustomApiParameterType.IntegerType, Description = description }],
+            ResponseProperties = [new() { UniqueName = "AmountOut", Type = CustomApiParameterType.IntegerType, Description = description }],
+        };
+
+        var files = await Generate(customApi).ToListAsync();
+
+        Assert.Equal(2, files.Count);
+        Assert.All(files, file =>
+        {
+            var lines = file.Content.ReplaceLineEndings("\n").Split('\n').Select(l => l.Trim()).ToList();
+            var summaryStart = lines.IndexOf("/// <summary>");
+            Assert.Equal(
+                ["/// <summary>", "/// Amount must be &lt; 1000 &amp; &gt; 0", "/// See the docs", "/// </summary>"],
+                lines.Skip(summaryStart).Take(4));
+        });
+    }
+
+    [Fact]
     public async Task Generates_Two_Files_Per_CustomApi()
     {
         var customApi = new CustomApiModel

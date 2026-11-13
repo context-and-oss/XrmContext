@@ -68,6 +68,20 @@ public class CustomApiMapperTests
     }
 
     [Fact]
+    public void GetXmlDocComment_WithSpecialCharacters_EscapesThem()
+    {
+        var actual = CustomApiMapper.GetXmlDocComment("Amount must be < 1000 & > 0");
+        Assert.Equal("/// <summary>\n/// Amount must be &lt; 1000 &amp; &gt; 0\n/// </summary>", actual);
+    }
+
+    [Fact]
+    public void GetXmlDocComment_WithMultipleLines_PrefixesEveryLine()
+    {
+        var actual = CustomApiMapper.GetXmlDocComment("First line\r\nSecond line\nThird line");
+        Assert.Equal("/// <summary>\n/// First line\n/// Second line\n/// Third line\n/// </summary>", actual);
+    }
+
+    [Fact]
     public void MapToTemplateModel_ThrowsOnNullCustomApi()
     {
         Assert.Throws<ArgumentNullException>(() => CustomApiMapper.MapToTemplateModel(null!, CreateContext()));

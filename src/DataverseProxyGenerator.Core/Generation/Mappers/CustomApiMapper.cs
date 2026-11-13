@@ -75,7 +75,12 @@ public static class CustomApiMapper
             return string.Empty;
         }
 
-        return $"/// <summary>\n/// {description}\n/// </summary>";
+        var lines = description
+            .ReplaceLineEndings("\n")
+            .Split('\n')
+            .Select(line => $"/// {NameSanitizer.EscapeXmlDoc(line)}");
+
+        return $"/// <summary>\n{string.Join("\n", lines)}\n/// </summary>";
     }
 
     /// <summary>

@@ -1,8 +1,8 @@
 /// <summary>
 {{~ for line in table.Description | string.split '\n' ~}}
-/// <para>{{ line | string.strip }}</para>
+/// <para>{{ line | string.strip | xml_doc }}</para>
 {{~ end ~}}
-/// <para>Display Name: {{ table.DisplayName }}</para>
+/// <para>Display Name: {{ table.DisplayName | xml_doc }}</para>
 /// </summary>
 [System.CodeDom.Compiler.GeneratedCode("DataverseProxyGenerator", "{{version}}")]
 [EntityLogicalName("{{table.LogicalName}}")]
@@ -35,16 +35,16 @@ public partial class {{table.SchemaName}} : ExtendedEntity{{ if table.Interfaces
     /// <summary>
     {{~ if column.Description && column.Description != "" && column.Description != " " && column.Description != "  " && column.Description != "   " && column.Description != "\t" && column.Description != "\n" && column.Description != "\r\n" ~}}
     {{~ for line in column.Description | string.split '\n' ~}}
-    /// <para>{{ line | string.strip }}</para>
+    /// <para>{{ line | string.strip | xml_doc }}</para>
     {{~ end ~}}
     {{~ end ~}}
     {{~ if column.DisplayName ~}}
-    /// <para>Display Name: {{ column.DisplayName }}</para>
+    /// <para>Display Name: {{ column.DisplayName | xml_doc }}</para>
     {{~ end ~}}
     /// </summary>
     {{~ end ~}}
     [AttributeLogicalName("{{ column.LogicalName }}")]
-    [DisplayName("{{ column.DisplayName }}")]
+    [DisplayName("{{ column.DisplayName | cs_string }}")]
     {{~ if column.IsObsolete ~}}
     [ObsoleteAttribute()]
     {{~ end ~}}
@@ -127,7 +127,7 @@ public partial class {{table.SchemaName}} : ExtendedEntity{{ if table.Interfaces
     {{~ for key in table.Keys ~}}
 
     /// <summary>
-    /// Retrieves the {{table.SchemaName}} using the {{key.DisplayName}} alternate key.
+    /// Retrieves the {{table.SchemaName}} using the {{ key.DisplayName | xml_doc }} alternate key.
     /// </summary>
     /// <param name="service">Organization service</param>
     {{~ for attr in key.KeyAttributes ~}}

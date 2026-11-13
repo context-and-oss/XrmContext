@@ -1,3 +1,4 @@
+using DataverseProxyGenerator.Core.Generation.Utilities;
 using Scriban;
 using Scriban.Runtime;
 
@@ -46,6 +47,10 @@ public abstract class BaseFileGenerator
         // Use a ScriptObject that preserves original property names
         var scriptObject = new ScriptObject(StringComparer.InvariantCulture);
         scriptObject.Import(model, renamer: member => member.Name);
+
+        // Escaping of Dataverse text depending on where it is inserted in the generated code
+        scriptObject.Import("xml_doc", new Func<string, string>(NameSanitizer.EscapeXmlDoc));
+        scriptObject.Import("cs_string", new Func<string, string>(NameSanitizer.SanitizeString));
         templateContext.PushGlobal(scriptObject);
 
         if (loader != null)
