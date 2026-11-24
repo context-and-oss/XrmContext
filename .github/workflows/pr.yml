@@ -16,7 +16,7 @@ jobs:
           dotnet-version: '10.x'
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore -p:Configuration=Release
 
       - name: Build (Release)
         run: dotnet build --configuration Release --no-restore
